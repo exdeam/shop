@@ -1,0 +1,10 @@
+version: '2'
+
+services:
+  nginx:
+    ports:
+    - "808:80"
+
+  mysql:
+    volumes:
+      - ./dump.sql:/docker-entrypoint-initdb.d/dump.sql

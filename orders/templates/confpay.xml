@@ -1,0 +1,6 @@
+<notification>
+  <orderId>{{ orderID }}</orderId>
+  <transactionType>{{ transactionType }}</transactionType>
+  <status>{{ status }}</status>
+  <error></error>
+</notification>

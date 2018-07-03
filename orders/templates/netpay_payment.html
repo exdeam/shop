@@ -1,0 +1,73 @@
+{% extends 'shop/base.html' %}
+{# {% load i18n form_tags lib_tags %} #}
+{% load i18n %}
+
+{% block content %}
+
+{% if form %}
+
+{% else %}
+ 
+    <h1 class="title">Заказ номер: {{ order.id }}</h1>
+    
+    <p><strong>Ваш заказ номер: {{ order.id }} создан.</strong></p>
+    <br />
+    <table>
+        <h3>Заказанные товары:</h3>
+        <thead>
+          <tr>
+            <th>Товар</th>
+            <th>Цена</th>
+            <th>Количество</th>
+            <th>Стоимость всего</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for item in order.items.all  %}
+            <tr class="row{% cycle "1" "2" %}">
+              <td>{{ item.product.name }}</td>
+              <td>{{ item.price }} руб.</td>
+              <td>{{ item.quantity }}</td>
+              <td>{{ item.get_cost }} руб.</td>
+            </tr>
+          {% endfor %}
+          <tr class="total">
+            <td colspan="3">Доставка</td>
+            <td class="num">{{ order.ship_price }} руб.</td>
+          </tr>
+          <tr class="total">
+            <td colspan="3">Всего</td>
+            <td class="num">{{ order.get_total_cost }} руб.</td>
+          </tr>
+        </tbody>
+    </table>
+    <br /><br />
+    <p><strong>Статус заказа: {% if order.paid %}Оплачен{% else %}В ожидании оплаты{% endif %}</strong></p>
+    <br /><br />
+    {% ifnotequal order.shipping_method 'Почта России Наложенный Платеж' %}
+      {% if order.paid %}
+      <p><strong>Заказ передан в службу доставки.</strong>
+      {% else %}  
+      <h4>Оплата заказа с помощью платежной системы NET PAY:</h4>
+      <br>
+      <div class="row">
+          <div class="col-md-6 full">
+              <img src="/static/img/netpay-icons.png" />
+          </div>
+      </div>   
+      <form id=pay name=pay method="GET" action="{{ action }}">
+          <h4 class="h4_style">{% trans "Для оплаты заказа с помощью платежной сиситемы NetPay" %}.</h4>
+          <h4 class="h4_style">{% trans "Нажмите на кнопку ниже" %}:</h4>
+          <div class="form-submit-left">
+              <input class="bt bt-blue2" type="submit" value={% trans "Оплатить" %}>
+          </div>
+          <p>
+              <input type="hidden" name="data" value="{{ data }}">
+              <input type="hidden" name="auth" value="{{ auth }}">
+              <input type="hidden" name="expire" value="{{ order_date }}">
+          </p>
+      </form>
+      {% endif %}
+    {% endifnotequal %}
+{% endif %}
+{% endblock %}

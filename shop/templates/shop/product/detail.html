@@ -1,0 +1,57 @@
+{% extends "shop/base.html" %}
+
+{% load static %}
+
+{% block title %}
+  {{ product.name }}
+{% endblock %}
+
+{% block content %}
+  <div class="breadcrumbs">
+    <a href="/">Каталог</a>
+      <span class="glyphicon glyphicon-menu-right" aria-hidden="true"></span>
+    <a href="{{ product.category.get_absolute_url }}">{{ product.category }}</a>
+  </div>
+  <div class="tovar">
+  <h1>{{ product.name }}</h1>
+    <div class="price">Цена: <span class="cena bold">{{ product.price }}</span> руб.
+      <form action="{% url "cart:CartAdd" product.id %}" method="post" class="add">
+          {{ cart_product_form }}
+          {% csrf_token %}
+          <input type="submit" value="Добавить в корзину">
+      </form>
+    </div>
+    <br>
+    <div>
+      <!-- Навигационные вкладки -->  
+      <ul class="nav nav-tabs" role="tablist">
+        <li role="presentation" class="active"><a href="#opisanie" aria-controls="opisanie" role="tab" data-toggle="tab">Описание</a></li>
+        <li role="presentation"><a href="#tech" aria-controls="tech" role="tab" data-toggle="tab">Технические характеристики</a></li>
+        <li role="presentation"><a href="#complects" aria-controls="complects" role="tab" data-toggle="tab">Комплектация</a></li>
+        <li role="presentation"><a href="#docs" aria-controls="docs" role="tab" data-toggle="tab">Документация</a></li>
+        <li role="presentation"><a href="#photo" aria-controls="photo" role="tab" data-toggle="tab">Фотогалерея</a></li>
+        <li role="presentation"><a href="#video" aria-controls="video" role="tab" data-toggle="tab">Видеообзоры</a></li>
+      </ul>
+        <!-- Вкладки панелей -->  
+        <div class="tab-content">
+          <div role="tabpanel" class="tab-pane fade in active" id="opisanie">
+            {{ product.opisanie | safe }}
+          </div>
+          <div role="tabpanel" class="tab-pane fade" id="tech">
+            {{ product.tech | safe }}
+          </div>
+          <div role="tabpanel" class="tab-pane fade" id="complects">
+            {{ product.complects | safe }}
+          </div>
+          <div role="tabpanel" class="tab-pane fade" id="docs">
+            {{ product.docs | safe }}
+          </div>
+          <div role="tabpanel" class="tab-pane fade" id="photo">
+            {{ product.photo | safe }}
+          </div>
+          <div role="tabpanel" class="tab-pane fade" id="video">
+            {{ product.video | safe }}
+          </div>
+        </div>    
+  </div>
+{% endblock %}

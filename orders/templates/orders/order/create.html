@@ -1,0 +1,132 @@
+{% extends "shop/base.html" %}
+{% load l10n %}
+{% load static %}
+{% block title %}
+  Оформление заказа
+{% endblock %}
+
+{% block content %}
+<form class="order-form" action="." method="post">
+
+<span role="subtotal" style="display: none">{{ cart.get_total_price_after_discount|unlocalize }}</span>
+
+<input type="hidden" name="shipping_cost_post"/>
+<input type="hidden" name="shipping_cost_postpay"/>
+<input type="hidden" name="shipping_cost_dl_home"/>
+<input type="hidden" name="shipping_cost_dl_terminal"/>
+
+  <h3>Шаг 1: Выберите способ получения</h3>
+  <div class="delivery-or-pickup">
+      <label class="delivery-or-pickup-block block-select">
+        <h4>
+          <input type="radio"  name="delivery-or-pickup"  value="delivery" checked />            Нужна доставка
+        </h4>
+        <p>Оплата при получении или по предоплате</p>
+        <p>
+          <img src="/static/img/russian_post.png"/>
+          <img src="/static/img/dl_logo.png"/>
+        </p>
+        <p>Итоговая сумма зависит от способа доставки</p>
+      </label>
+      <label class="delivery-or-pickup-block block-select">
+        <h4>
+          <input type="radio"  name="delivery-or-pickup"  value="pickup" />            Заберу сам
+        </h4>
+        <p>Товар можно оплатить и забрать в нашем офисе</p>
+        <p>Адрес: Нижегородская область, Богородский&nbsp;р-н, п.&nbsp;Кудьма, Кудьминская промзона, 2&nbsp;тер.</p>
+        <h3>ИТОГО: {{ cart.get_total_price_after_discount|floatformat:"2"}} руб.</h3>
+      </label>
+  </div>
+  <div class="order-step order-animated-appearance order-step-2 visible" role="delivery">
+    <h3>Шаг 2: Укажите данные</h3>
+    <div class="row">
+      <div class="col-md-6">
+      {{ form.as_p }}
+      {% csrf_token %}
+      </div>
+    </div>
+  </div>
+  <div class="shipping-cost-loading order-animated-appearance">
+    <img src="/static/img/loading.gif"/>
+    Расчёт стоимости доставки...
+  </div>
+  <div class="order-step order-animated-appearance order-step-3">
+    <h3>Шаг 3: Выберите вариант оплаты и доставки</h3>
+    <div class="row dost">
+      <div class="col-md-4 shipping-method block-select" shipping-method="dl"> 
+      <label>
+        <h4>
+          <input type="radio"  name="shipping-method"  value="dl" />Деловые линии, ПРЕДОПЛАТА
+        </h4>
+        <div class="shipping-method-logo"><img src="/static/img/dl_logo.png"/></div>
+        <div class="shipping-method-text">
+          Стомость доставки:
+          <p><label><input type="radio"  name="dl_type"  value="home" /> до дома: <span role="shipping-cost-home"></span> руб.</label></p>
+          <p><label><input type="radio"  name="dl_type"  value="terminal" /> до терминала: <span role="shipping-cost-terminal"></span> руб.</label></p>
+        </div>
+        <div class="shipping-method-cost">
+          <h3>ИТОГО: <span role="total"></span> руб.</h3>
+          <p>
+            <img class="shipping-method-pay-logo" src="/static/img/visa_logo.png"/>
+            <img class="shipping-method-pay-logo" src="/static/img/mastercard.png"/>
+          </p>
+        </div>
+      </label>
+    </div>
+    <div class="col-md-3 shipping-method block-select" shipping-method="post">
+      <label>
+        <h4>
+          <input type="radio"  name="shipping-method"  value="post" />                «Почта России», ПРЕДОПЛАТА
+        </h4>
+        <div class="shipping-method-logo"><img src="/static/img/russian_post.png"></div>
+        <div class="shipping-method-text">
+          Оплата через интернет или по квитанции<br/>
+          Стоимость доставки: <span role="shipping-cost"></span> руб.
+        </div>
+        <div class="shipping-method-cost">
+          <h3>ИТОГО: <span role="total"></span> руб.</h3>
+          <p>
+            <img class="shipping-method-pay-logo" src="/static/img/visa_logo.png"/>
+            <img class="shipping-method-pay-logo" src="/static/img/mastercard.png"/>
+          </p>
+        </div>
+      </label>
+    </div>
+    <div class="col-md-3 shipping-method block-select" shipping-method="postpay">
+      <label>
+            <h4>
+                <input type="radio"  name="shipping-method"  value="postpay" />                «Почта России», ОПЛАТА ПРИ ПОЛУЧЕНИИ
+            </h4>
+            <div class="shipping-method-logo"><img src="/static/img/russian_post.png"></div>
+            <div class="shipping-method-text">
+                Оплата в почтовом отделении при получении<br/>
+                Стоимость доставки: <span role="shipping-cost"></span> руб.
+            </div>
+            <div class="shipping-method-cost">
+                <h3>ИТОГО: <span role="total"></span> руб.</h3>
+                <p class="error">Внимание:<br/>Комиссия Почты России<br/>за перевод: <span role="postpay_fee"></span> руб.</p>
+            </div>
+      </label>
+    </div>
+    <div class="col-md-4 shipping-method block-select hidden" shipping-method="index_errors"> 
+        <h4>
+          Проверьте правильность ввода почтового индекса. <br>
+          Если Вы уверены в правильности Вашего индекса, просьба связаться с магазином по телефону 8 (831) 220-76-76.
+        </h4>
+    </div>
+  </div>
+</div>
+  <div class="right">
+    <p>
+      <label>
+        <input type="checkbox" class="personal-data-checkbox"/><span>Я согласен на обработку персональных данных (<a target="_blank" href="/personal-data-agreement/">текст соглашения</a>)</span>
+      </label>
+    </p>
+  <button type="submit" class="btn btn-primary">Оформить заказ</button>
+  </div>
+  
+</form>
+<script src="{% static "js/new-order-form.js" %}"></script>
+<script src="{% static "js/jquery.smooth-scroll.js" %}"></script>
+{% endblock %}
+
