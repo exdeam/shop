@@ -18,7 +18,7 @@ html5lib==1.0.1
 idna==2.6
 kombu==3.0.37
 pdfrw==0.4
-Pillow==5.0.0
+Pillow==8.2.0
 psycopg2==2.7.4
 psycopg2-binary==2.7.4
 pycparser==2.18
